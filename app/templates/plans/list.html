@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Membership Plans{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('plans_form') }}" class="btn btn-primary">+ New Plan</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Name</th><th>Duration</th>
+            <th class="text-end">Price</th><th>Access</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.plan_id }}</td>
+                <td>{{ r.plan_name }}</td>
+                <td>{{ r.duration_months }} mo</td>
+                <td class="text-end">{{ "%.2f"|format(r.price) }}</td>
+                <td><span class="badge badge-info">{{ r.access_level }}</span></td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('plans_form', pk=r.plan_id) }}">Edit</a>
+                        {{ delete_btn(url_for('plans_delete', pk=r.plan_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" class="muted-text">No plans yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

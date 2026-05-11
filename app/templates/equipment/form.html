@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if row else "New" }} Equipment{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 520px;">
+    <div class="card-header"><div class="card-title">{{ "Edit" if row else "New" }} Equipment</div></div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Name</label>
+                    <input name="name" required value="{{ row.name if row else '' }}">
+                </div>
+                <div class="form-group full">
+                    <label>Status</label>
+                    <select name="status">
+                        {% for s in ['available','maintenance','retired'] %}
+                            <option value="{{ s }}" {% if row and row.status==s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-ghost" href="{{ url_for('equipment_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

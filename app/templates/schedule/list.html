@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Class Schedule{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('schedule_form') }}" class="btn btn-primary">+ New Slot</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Day</th><th>Start</th><th>Min</th>
+            <th>Class</th><th>Trainer</th><th>Room</th><th>Cap.</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.schedule_id }}</td>
+                <td>{{ r.day_of_week }}</td>
+                <td>{{ r.start_time }}</td>
+                <td>{{ r.duration_min }}</td>
+                <td>{{ r.class_name }}</td>
+                <td>{{ r.trainer_name }}</td>
+                <td>{{ r.room or '' }}</td>
+                <td>{{ r.capacity }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('schedule_form', pk=r.schedule_id) }}">Edit</a>
+                        {{ delete_btn(url_for('schedule_delete', pk=r.schedule_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="9" class="muted-text">No schedule slots yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

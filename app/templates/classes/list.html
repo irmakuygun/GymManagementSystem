@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Classes{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('classes_form') }}" class="btn btn-primary">+ New Class</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Class</th><th>Capacity</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.class_id }}</td>
+                <td>{{ r.class_name }}</td>
+                <td>{{ r.capacity }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('classes_form', pk=r.class_id) }}">Edit</a>
+                        {{ delete_btn(url_for('classes_delete', pk=r.class_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4" class="muted-text">No classes yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

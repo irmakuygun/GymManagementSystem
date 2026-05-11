@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Attendance{% endblock %}
+
+{% block content %}
+<p class="form-hint">Check-ins are created from the Bookings page.</p>
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Member</th><th>Class</th><th>Booking date</th>
+            <th>Check-in</th><th>Check-out</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.log_id }}</td>
+                <td>{{ r.member_name }}</td>
+                <td>{{ r.class_name or '—' }}</td>
+                <td>{{ r.booking_date|fmt_date }}</td>
+                <td>{{ r.check_in_time }}</td>
+                <td>{{ r.check_out_time or '' }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        {% if not r.check_out_time %}
+                            <form class="inline-form" method="post" action="{{ url_for('attendance_checkout', pk=r.log_id) }}">
+                                <button class="btn btn-sm btn-ghost">Check out</button>
+                            </form>
+                        {% endif %}
+                        {{ delete_btn(url_for('attendance_delete', pk=r.log_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7" class="muted-text">No attendance records yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

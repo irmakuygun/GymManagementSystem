@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if row else "New" }} Member{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><div class="card-title">{{ "Edit" if row else "New" }} Member</div></div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input name="name" required value="{{ row.name if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Surname</label>
+                    <input name="surname" required value="{{ row.surname if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input name="phone" value="{{ row.phone if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Join date</label>
+                    <input type="date" name="join_date" required
+                           value="{{ row.join_date|fmt_date if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Plan</label>
+                    <select name="plan_id">
+                        <option value="">—</option>
+                        {% for p in plans %}
+                            <option value="{{ p.plan_id }}" {% if row and row.plan_id==p.plan_id %}selected{% endif %}>
+                                {{ p.plan_name }} ({{ p.duration_months }}mo)
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Membership start</label>
+                    <input type="date" name="membership_start_date"
+                           value="{{ row.membership_start_date|fmt_date if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Membership end (auto if blank)</label>
+                    <input type="date" name="membership_end_date"
+                           value="{{ row.membership_end_date|fmt_date if row else '' }}">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-ghost" href="{{ url_for('members_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

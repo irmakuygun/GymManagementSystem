@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if row else "New" }} Schedule{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><div class="card-title">{{ "Edit" if row else "New" }} Schedule Slot</div></div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Class</label>
+                    <select name="class_id" required>
+                        <option value="">-- choose --</option>
+                        {% for c in classes %}
+                            <option value="{{ c.class_id }}" {% if row and row.class_id==c.class_id %}selected{% endif %}>{{ c.class_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trainer</label>
+                    <select name="trainer_id" required>
+                        <option value="">-- choose --</option>
+                        {% for t in trainers %}
+                            <option value="{{ t.trainer_id }}" {% if row and row.trainer_id==t.trainer_id %}selected{% endif %}>{{ t.name }} {{ t.surname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Day</label>
+                    <select name="day_of_week">
+                        {% for d in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %}
+                            <option value="{{ d }}" {% if row and row.day_of_week==d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start time</label>
+                    <input type="time" name="start_time" required value="{{ row.start_time if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Duration (min)</label>
+                    <input type="number" min="5" name="duration_min" required
+                           value="{{ row.duration_min if row else 60 }}">
+                </div>
+                <div class="form-group">
+                    <label>Room</label>
+                    <input name="room" value="{{ row.room if row else '' }}">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-ghost" href="{{ url_for('schedule_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

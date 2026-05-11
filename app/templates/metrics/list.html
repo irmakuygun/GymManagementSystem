@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Health Metrics{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('metrics_form') }}" class="btn btn-primary">+ New Metric</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Member</th><th>Date</th>
+            <th class="text-end">Weight</th><th class="text-end">Body fat</th>
+            <th class="text-end">Muscle</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.metric_id }}</td>
+                <td>{{ r.member_name }}</td>
+                <td>{{ r.recorded_date|fmt_date }}</td>
+                <td class="text-end">{{ r.weight }}</td>
+                <td class="text-end">{{ r.body_fat }}</td>
+                <td class="text-end">{{ r.muscle_mass }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('metrics_form', pk=r.metric_id) }}">Edit</a>
+                        {{ delete_btn(url_for('metrics_delete', pk=r.metric_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="7" class="muted-text">No metrics yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

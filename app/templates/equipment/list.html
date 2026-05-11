@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Equipment{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('equipment_form') }}" class="btn btn-primary">+ New Equipment</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Name</th><th>Status</th>
+            <th>Maint. count</th><th>Last maint.</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.equipment_id }}</td>
+                <td>{{ r.name }}</td>
+                <td>
+                    {% if r.status == 'available' %}
+                        <span class="badge badge-success">{{ r.status }}</span>
+                    {% elif r.status == 'maintenance' %}
+                        <span class="badge badge-warning">{{ r.status }}</span>
+                    {% else %}
+                        <span class="badge badge-neutral">{{ r.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ r.maintenance_count }}</td>
+                <td>{{ r.last_maintenance|fmt_date }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('maintenance_list', eq_id=r.equipment_id) }}">Maintenance</a>
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('equipment_form', pk=r.equipment_id) }}">Edit</a>
+                        {{ delete_btn(url_for('equipment_delete', pk=r.equipment_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" class="muted-text">No equipment yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

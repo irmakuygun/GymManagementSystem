@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if row else "New" }} Class{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><div class="card-title">{{ "Edit" if row else "New" }} Class</div></div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Class name</label>
+                    <input name="class_name" required value="{{ row.class_name if row else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" min="1" name="capacity" required
+                           value="{{ row.capacity if row else 10 }}">
+                </div>
+            </div>
+
+            <label style="display:block; margin-top:18px; margin-bottom:8px;">Equipment used</label>
+            <div class="checkbox-grid">
+                {% for eq in all_equipment %}
+                    <div class="checkbox-row">
+                        <input type="checkbox" name="equipment_ids"
+                               value="{{ eq.equipment_id }}" id="eq{{ eq.equipment_id }}"
+                               {% if eq.equipment_id in selected %}checked{% endif %}>
+                        <label for="eq{{ eq.equipment_id }}">{{ eq.name }}</label>
+                    </div>
+                {% else %}
+                    <div class="muted-text">No equipment available.</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-ghost" href="{{ url_for('classes_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

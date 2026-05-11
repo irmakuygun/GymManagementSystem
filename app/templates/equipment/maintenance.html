@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Maintenance — {{ eq.name }}{% endblock %}
+{% block page_title %}Maintenance · {{ eq.name }}{% endblock %}
+
+{% block topbar_actions %}
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('equipment_list') }}">← Equipment</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">{{ eq.name }}</div>
+        {% if eq.status == 'available' %}
+            <span class="badge badge-success">{{ eq.status }}</span>
+        {% elif eq.status == 'maintenance' %}
+            <span class="badge badge-warning">{{ eq.status }}</span>
+        {% else %}
+            <span class="badge badge-neutral">{{ eq.status }}</span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="maintenance_date" required>
+                </div>
+                <div class="form-group">
+                    <label>Technician</label>
+                    <input name="technician_name">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Description</label>
+                    <input name="description">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Add maintenance record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card card-table">
+    <div class="card-header"><div class="card-title">Maintenance history</div></div>
+    <table>
+        <thead><tr>
+            <th>#</th><th>Date</th><th>Technician</th><th>Description</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.maintenance_id }}</td>
+                <td>{{ r.maintenance_date|fmt_date }}</td>
+                <td>{{ r.technician_name or '' }}</td>
+                <td>{{ r.description or '' }}</td>
+                <td class="text-end">{{ delete_btn(url_for('maintenance_delete', pk=r.maintenance_id)) }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="muted-text">No maintenance records.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

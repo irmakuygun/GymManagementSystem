@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Bookings{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('bookings_new') }}" class="btn btn-primary">+ New Booking</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Date</th><th>Time</th><th>Member</th>
+            <th>Class</th><th>Trainer</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.booking_id }}</td>
+                <td>{{ r.booking_date|fmt_date }}</td>
+                <td>{{ r.start_time }}</td>
+                <td>{{ r.member_name }}</td>
+                <td>{{ r.class_name }}</td>
+                <td>{{ r.trainer_name }}</td>
+                <td>
+                    {% if r.status == 'attended' %}
+                        <span class="badge badge-success">{{ r.status }}</span>
+                    {% elif r.status == 'confirmed' %}
+                        <span class="badge badge-info">{{ r.status }}</span>
+                    {% else %}
+                        <span class="badge badge-neutral">{{ r.status }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        {% if r.status == 'confirmed' %}
+                            <form class="inline-form" method="post" action="{{ url_for('attendance_checkin', booking_id=r.booking_id) }}">
+                                <button class="btn btn-sm btn-success">Check in</button>
+                            </form>
+                            <form class="inline-form" method="post" action="{{ url_for('bookings_cancel', pk=r.booking_id) }}">
+                                <button class="btn btn-sm btn-ghost">Cancel</button>
+                            </form>
+                        {% endif %}
+                        {{ delete_btn(url_for('bookings_delete', pk=r.booking_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="muted-text">No bookings yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

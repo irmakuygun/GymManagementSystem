@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Payments{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('payments_form') }}" class="btn btn-primary">+ New Payment</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Member</th><th>Plan</th>
+            <th class="text-end">Amount</th><th>Method</th>
+            <th>Date</th><th>Next bill</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.payment_id }}</td>
+                <td>{{ r.member_name }}</td>
+                <td>{{ r.plan_name }}</td>
+                <td class="text-end">{{ "%.2f"|format(r.amount) }}</td>
+                <td>{{ r.payment_method }}</td>
+                <td>{{ r.payment_date|fmt_date }}</td>
+                <td>{{ r.next_billing_date|fmt_date }}</td>
+                <td>
+                    {% if r.payment_status == 'completed' %}
+                        <span class="badge badge-success">{{ r.payment_status }}</span>
+                    {% elif r.payment_status == 'pending' %}
+                        <span class="badge badge-warning">{{ r.payment_status }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ r.payment_status }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('payments_form', pk=r.payment_id) }}">Edit</a>
+                        {{ delete_btn(url_for('payments_delete', pk=r.payment_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="9" class="muted-text">No payments yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

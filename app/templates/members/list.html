@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Members{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('members_form') }}" class="btn btn-primary">+ New Member</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Name</th><th>Phone</th><th>Plan</th><th>Active</th>
+            <th>Membership</th><th class="text-end">Total paid</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.member_id }}</td>
+                <td><a href="{{ url_for('members_detail', pk=r.member_id) }}">{{ r.name }} {{ r.surname }}</a></td>
+                <td>{{ r.phone or '' }}</td>
+                <td>{{ r.plan_name or '—' }}</td>
+                <td>
+                    {% if r.is_active %}
+                        <span class="badge badge-success">active</span>
+                    {% else %}
+                        <span class="badge badge-neutral">inactive</span>
+                    {% endif %}
+                </td>
+                <td class="no-wrap">{{ r.membership_start_date|fmt_date }} → {{ r.membership_end_date|fmt_date }}</td>
+                <td class="text-end">{{ "%.2f"|format(r.total_paid) }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('members_form', pk=r.member_id) }}">Edit</a>
+                        {{ delete_btn(url_for('members_delete', pk=r.member_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="muted-text">No members yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

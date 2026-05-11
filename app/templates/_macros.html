@@ -1,0 +1,7 @@
+{# Inline confirm-delete form macro to keep templates short. #}
+{% macro delete_btn(action_url, label="Delete") %}
+<form method="post" action="{{ action_url }}" class="inline-form"
+      onsubmit="return confirm('Are you sure?');">
+    <button class="btn btn-sm btn-danger">{{ label }}</button>
+</form>
+{% endmacro %}

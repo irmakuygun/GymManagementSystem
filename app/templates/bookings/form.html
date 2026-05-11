@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}New Booking{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><div class="card-title">New Booking</div></div>
+    <div class="card-body">
+        <p class="form-hint">
+            Booking goes through <code>sp_book_class</code> — it is rejected if the
+            class is full or the member's membership is inactive.
+        </p>
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Member</label>
+                    <select name="member_id" required>
+                        <option value="">-- choose --</option>
+                        {% for m in members %}
+                            <option value="{{ m.member_id }}">{{ m.name }} {{ m.surname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Class slot</label>
+                    <select name="schedule_id" required>
+                        <option value="">-- choose --</option>
+                        {% for s in schedule %}
+                            <option value="{{ s.schedule_id }}">
+                                {{ s.day_of_week }} {{ s.start_time }} — {{ s.class_name }} ({{ s.trainer_name }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Booking date</label>
+                    <input type="date" name="booking_date" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Book</button>
+                <a class="btn btn-ghost" href="{{ url_for('bookings_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

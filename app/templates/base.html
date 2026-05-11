@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Gym Management{% endblock %} · GymPro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+{% set ep = request.endpoint or '' %}
+{% set nav = [
+    ('index',           'Dashboard',      '◉'),
+    ('members_list',    'Members',        '◆'),
+    ('trainers_list',   'Trainers',       '⚡'),
+    ('classes_list',    'Classes',        '◇'),
+    ('schedule_list',   'Schedule',       '⌗'),
+    ('equipment_list',  'Equipment',      '⛭'),
+    ('bookings_list',   'Bookings',       '✚'),
+    ('attendance_list', 'Attendance',     '✓'),
+    ('payments_list',   'Payments',       '$'),
+    ('metrics_list',    'Health Metrics', '♥'),
+    ('plans_list',      'Plans',          '★'),
+] %}
+
+{# A nav item is active if the current endpoint starts with its prefix
+   (e.g. members_form/members_detail both highlight Members). #}
+{% set group_prefix = {
+    'index':           'index',
+    'members_list':    'members_',
+    'trainers_list':   'trainers_',
+    'classes_list':    'classes_',
+    'schedule_list':   'schedule_',
+    'equipment_list':  ['equipment_', 'maintenance_'],
+    'bookings_list':   'bookings_',
+    'attendance_list': 'attendance_',
+    'payments_list':   'payments_',
+    'metrics_list':    'metrics_',
+    'plans_list':      'plans_',
+} %}
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-name">GYMPRO</div>
+        <div class="brand-sub">Management Console</div>
+    </div>
+    <nav class="sidebar-nav">
+        {% for endpoint, label, icon in nav %}
+            {% set prefix = group_prefix[endpoint] %}
+            {% if prefix is string %}
+                {% set is_active = (endpoint == 'index' and ep == 'index')
+                                   or (endpoint != 'index' and ep.startswith(prefix)) %}
+            {% else %}
+                {% set is_active = ep.startswith(prefix[0]) or ep.startswith(prefix[1]) %}
+            {% endif %}
+            <a class="nav-item {% if is_active %}active{% endif %}"
+               href="{{ url_for(endpoint) }}">
+                <span class="nav-icon">{{ icon }}</span>
+                <span>{{ label }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+    <div class="sidebar-footer">SE 2230 · v1.0</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="page-title">{% block page_title %}{{ self.title() }}{% endblock %}</div>
+        </div>
+        <div class="topbar-right">
+            {% block topbar_actions %}{% endblock %}
+            <span class="date-chip">{{ today_str }}</span>
+        </div>
+    </header>
+
+    <main class="body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="flash flash-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+</body>
+</html>

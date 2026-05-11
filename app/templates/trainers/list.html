@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import delete_btn %}
+{% block title %}Trainers{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{{ url_for('trainers_form') }}" class="btn btn-primary">+ New Trainer</a>
+{% endblock %}
+
+{% block content %}
+<div class="card card-table">
+    <table>
+        <thead><tr>
+            <th>#</th><th>Name</th><th>Specialty</th><th>Cert.</th>
+            <th>Status</th><th>Hire date</th><th class="text-end">Salary</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.trainer_id }}</td>
+                <td>{{ r.name }} {{ r.surname }}</td>
+                <td>{{ r.specialty or '' }}</td>
+                <td>{{ r.certification_level or '' }}</td>
+                <td>
+                    {% if r.employment_status == 'active' %}
+                        <span class="badge badge-success">{{ r.employment_status }}</span>
+                    {% else %}
+                        <span class="badge badge-neutral">{{ r.employment_status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ r.hire_date|fmt_date }}</td>
+                <td class="text-end">{{ "%.2f"|format(r.salary) if r.salary else '' }}</td>
+                <td class="text-end">
+                    <span class="row-actions">
+                        <a class="btn btn-sm btn-ghost" href="{{ url_for('trainers_form', pk=r.trainer_id) }}">Edit</a>
+                        {{ delete_btn(url_for('trainers_delete', pk=r.trainer_id)) }}
+                    </span>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="muted-text">No trainers yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
